@@ -1,0 +1,23 @@
+{
+  "name": "automated-documentation-generator",
+  "version": "1.0.0",
+  "description": "Full-stack automated documentation generator",
+  "scripts": {
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm run dev",
+    "client": "cd frontend && npm run dev",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.24",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  },
+  "dependencies": {
+    "date-fns": "^4.1.0"
+  }
+}

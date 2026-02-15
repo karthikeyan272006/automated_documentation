@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Documentation Generator - Project Specification</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #1e40af;
+            --text: #1f2937;
+            --bg: #f9fafb;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 40px;
+            background: var(--card-bg);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--secondary);
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+            margin-top: 30px;
+            font-size: 1.5rem;
+        }
+
+        h3 {
+            color: #374151;
+            margin-top: 20px;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        ul {
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        code {
+            background-color: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: #1f2937;
+            color: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .tech-tag {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                border-radius: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Automated Documentation Generator</h1>
+            <p><strong>System Architecture & Code Explanation Report</strong></p>
+            <p>Date: February 15, 2026</p>
+            <button class="no-print" onclick="window.print()"
+                style="margin-top: 20px; padding: 10px 20px; background: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer;">Save
+                as PDF / Print</button>
+        </header>
+
+        <section id="overview">
+            <h2>1. Project Overview</h2>
+            <p>
+                The <strong>Automated Documentation Generator</strong> is a full-stack web application designed to help
+                users track their professional activities, manage tasks, and automatically generate comprehensive
+                productivity reports. The system streamlines the documentation process, allowing users to focus on their
+                work while the application handles the logging and analysis of their progress.
+            </p>
+        </section>
+
+        <section id="tech-stack">
+            <h2>2. Technology Stack</h2>
+            <div>
+                <span class="tech-tag">React.js (Vite)</span>
+                <span class="tech-tag">Tailwind CSS</span>
+                <span class="tech-tag">Node.js (Express)</span>
+                <span class="tech-tag">MongoDB (Mongoose)</span>
+                <span class="tech-tag">JWT Authentication</span>
+                <span class="tech-tag">Chart.js</span>
+            </div>
+        </section>
+
+        <section id="backend-architecture">
+            <h2>3. Backend Architecture</h2>
+            <p>
+                The backend is built with <strong>Node.js</strong> and <strong>Express</strong>, following a
+                Controller-Route-Model pattern.
+            </p>
+            <h3>Database Models (Mongoose)</h3>
+            <ul>
+                <li><strong>User:</strong> Stores user credentials, profile information, and password hashes (using
+                    bcrypt).</li>
+                <li><strong>Task:</strong> Represents individual work items with titles, descriptions, status
+                    (pending/completed), and priority.</li>
+                <li><strong>Log:</strong> Tracks system activity and user interactions for audit purposes.</li>
+                <li><strong>Report:</strong> Stores generated summaries, analytics, and exported documentation data.
+                </li>
+            </ul>
+
+            <h3>API Endpoints</h3>
+            <ul>
+                <li><code>/api/users</code>: Authentication, Registration, and User Profile.</li>
+                <li><code>/api/tasks</code>: CRUD operations for managing work items.</li>
+                <li><code>/api/analytics</code>: Aggregates data for productivity charts and stats.</li>
+                <li><code>/api/reports</code>: Handles the generation and retrieval of PDF/HTML reports.</li>
+                <li><code>/api/admin</code>: Specialized routes for system-level monitoring and user management.</li>
+            </ul>
+        </section>
+
+        <section id="frontend-architecture">
+            <h2>4. Frontend Architecture</h2>
+            <p>
+                The frontend is a <strong>Single Page Application (SPA)</strong> built with <strong>React</strong> and
+                <strong>Vite</strong>.
+            </p>
+            <h3>Key Components</h3>
+            <ul>
+                <li><strong>AuthContext:</strong> Global state management for user authentication status and session
+                    tokens.</li>
+                <li><strong>ProtectedRoute:</strong> A higher-order component that restricts access to the dashboard for
+                    unauthenticated users.</li>
+                <li><strong>Navigation:</strong> A responsive sidebar that provides access to the Dashboard, Task
+                    Manager, and Reports.</li>
+            </ul>
+
+            <h3>Pages</h3>
+            <ul>
+                <li><strong>Dashboard:</strong> Visual representation of user productivity using Chart.js.</li>
+                <li><strong>Task Manager:</strong> Interactive interface for creating, editing, and deleting tasks.</li>
+                <li><strong>Reports:</strong> View and export system-generated documentation.</li>
+            </ul>
+        </section>
+
+        <section id="workflow">
+            <h2>5. System Workflow</h2>
+            <ol>
+                <li><strong>Authentication:</strong> User logs in via JWT. The token is stored locally and used for all
+                    subsequent API requests.</li>
+                <li><strong>Task Tracking:</strong> The user adds tasks. The system logs the time of creation and
+                    updates.</li>
+                <li><strong>Data Aggregation:</strong> The backend calculates completion rates, total hours worked, and
+                    task distribution.</li>
+                <li><strong>Report Generation:</strong> Based on the aggregated data, the system creates a structured
+                    report that can be downloaded by the user.</li>
+            </ol>
+        </section>
+
+        <section id="code-explanation">
+            <h2>6. Code Explanation (Key Files)</h2>
+            <h3>Backend: <code>server.js</code></h3>
+            <p>
+                This is the entry point of the backend. It initializes the Express application, connects to MongoDB, and
+                registers all API routes.
+            </p>
+
+            <h3>Frontend: <code>src/utils/api.js</code></h3>
+            <p>
+                A centralized Axios instance. It includes an <strong>Interceptor</strong> that automatically attaches
+                the JWT token to every outgoing request, ensuring secure communication.
+            </p>
+
+            <h3>Frontend: <code>src/pages/Dashboard.jsx</code></h3>
+            <p>
+                Uses hooks to fetch analytics data and renders charts to provide the user with a visual overview of
+                their performance.
+            </p>
+        </section>
+
+        <div class="footer">
+            <p>&copy; 2026 Automated Documentation Generator Project</p>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -92,7 +92,7 @@ const Login = () => {
                         <p className="text-slate-500 font-medium">
                             New to the ecosystem?{' '}
                             <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
-                                Create Pulse Account
+                                Create Pulse
                             </Link>
                         </p>
                     </div>

@@ -15,9 +15,12 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: "http://localhost:5173",
-        methods: ["GET", "POST"]
+        methods: ["GET", "POST", "PUT", "DELETE"]
     }
 });
+
+// Make io accessible in controllers
+app.set('socketio', io);
 
 app.use(cors());
 app.use(express.json());
@@ -28,6 +31,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
+app.use('/api/activities', require('./routes/activityRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/reports', require('./routes/reportRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));

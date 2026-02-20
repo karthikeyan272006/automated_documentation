@@ -23,14 +23,14 @@ const Register = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#0f172a]">
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#020617]">
             {/* Background Glows */}
-            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-500/10 blur-[120px] rounded-full"></div>
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-violet-500/10 blur-[120px] rounded-full"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-pink-500/10 blur-[120px] rounded-full"></div>
 
             <div className="w-full max-w-lg z-10">
                 <div className="text-center mb-10">
-                    <div className="inline-flex p-4 bg-indigo-500 rounded-2xl shadow-2xl shadow-indigo-500/40 mb-6 font-bold text-white">
+                    <div className="inline-flex p-4 bg-violet-600 rounded-2xl shadow-2xl shadow-violet-500/40 mb-6 font-bold text-white">
                         <Zap size={32} fill="white" />
                     </div>
                     <h1 className="text-4xl font-black text-white tracking-tight mb-3">

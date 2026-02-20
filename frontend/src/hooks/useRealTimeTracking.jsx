@@ -19,7 +19,17 @@ export const useRealTimeTracking = (userId, activeTask) => {
             }
         };
 
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                setStatus('Idle');
+                sendUpdate(false);
+            } else {
+                handleActivity();
+            }
+        };
+
         const sendUpdate = (active) => {
+            if (!userId) return;
             socket.emit('user_activity', {
                 userId,
                 active,
@@ -34,18 +44,22 @@ export const useRealTimeTracking = (userId, activeTask) => {
             if (diff > 60 && status === 'Active') { // 1 minute idle threshold
                 setStatus('Idle');
                 sendUpdate(false);
-            } else if (status === 'Active') {
+            } else if (status === 'Active' && !document.hidden) {
                 sendUpdate(true);
             }
-        }, 30000); // Pulse every 30 seconds
+        }, 30000);
 
         window.addEventListener('mousemove', handleActivity);
         window.addEventListener('keydown', handleActivity);
+        window.addEventListener('focus', handleActivity);
+        document.addEventListener('visibilitychange', handleVisibilityChange);
 
         return () => {
             clearInterval(interval);
             window.removeEventListener('mousemove', handleActivity);
             window.removeEventListener('keydown', handleActivity);
+            window.removeEventListener('focus', handleActivity);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
         };
     }, [userId, activeTask, status]);
 

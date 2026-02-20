@@ -3,9 +3,9 @@ import Sidebar from './Sidebar';
 
 const Layout = ({ children }) => {
     return (
-        <div className="flex min-h-screen bg-[#0f172a]">
+        <div className="flex min-h-screen bg-[#020617]">
             {/* Ambient Background Glows */}
-            <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
+            <div className="fixed top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-500/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
             <div className="fixed bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-pink-500/10 blur-[120px] rounded-full z-0 pointer-events-none"></div>
 
             <Sidebar />

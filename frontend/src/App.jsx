@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TaskManager from './pages/TaskManager';
 import Reports from './pages/Reports';
+import ActivityTracker from './pages/ActivityTracker';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskManager />} />
+            <Route path="/activity" element={<ActivityTracker />} />
             <Route path="/reports" element={<Reports />} />
           </Route>
 

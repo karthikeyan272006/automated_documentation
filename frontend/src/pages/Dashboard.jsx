@@ -62,11 +62,11 @@ const Dashboard = () => {
             {
                 label: 'Productivity Pulse',
                 data: analytics?.weekly?.chartData.map(d => d.time) || [],
-                backgroundColor: 'rgba(99, 102, 241, 0.5)',
-                borderColor: '#6366f1',
+                backgroundColor: 'rgba(139, 92, 246, 0.5)',
+                borderColor: '#8b5cf6',
                 borderWidth: 2,
                 borderRadius: 12,
-                hoverBackgroundColor: '#818cf8',
+                hoverBackgroundColor: '#a78bfa',
             },
         ],
     };
@@ -96,12 +96,12 @@ const Dashboard = () => {
 
             {/* Stats Showcase */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div className="glass-card p-8 border-indigo-500/20 relative overflow-hidden group">
+                <div className="glass-card p-8 border-violet-500/20 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                        <Clock size={80} className="text-indigo-400" />
+                        <Clock size={80} className="text-violet-400" />
                     </div>
                     <div className="flex items-center space-x-4 mb-4">
-                        <div className="p-3 bg-indigo-500/20 rounded-2xl text-indigo-400">
+                        <div className="p-3 bg-violet-500/20 rounded-2xl text-violet-400">
                             <Clock size={24} />
                         </div>
                         <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">Focus Duration</span>
@@ -127,19 +127,19 @@ const Dashboard = () => {
                     <p className="text-slate-500 text-sm mt-4 font-medium">Tasks pushed to production</p>
                 </div>
 
-                <div className="glass-card p-8 border-cyan-500/20 relative overflow-hidden group">
+                <div className="glass-card p-8 border-emerald-500/20 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                        <Target size={80} className="text-cyan-400" />
+                        <Target size={80} className="text-emerald-400" />
                     </div>
                     <div className="flex items-center space-x-4 mb-4">
-                        <div className="p-3 bg-cyan-500/20 rounded-2xl text-cyan-400">
+                        <div className="p-3 bg-emerald-500/20 rounded-2xl text-emerald-400">
                             <Zap size={24} />
                         </div>
                         <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">Efficiency</span>
                     </div>
                     <h2 className="text-4xl font-black text-white">94%</h2>
                     <div className="mt-4 w-full bg-slate-700/50 h-2 rounded-full overflow-hidden">
-                        <div className="bg-gradient-to-r from-cyan-500 to-blue-500 h-full w-[94%] shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div>
+                        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full w-[94%] shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
                     </div>
                 </div>
             </div>

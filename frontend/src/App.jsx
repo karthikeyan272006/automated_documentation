@@ -6,7 +6,10 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import TaskManager from './pages/TaskManager';
 import Reports from './pages/Reports';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import ProtectedRoute from './components/ProtectedRoute';
+
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />

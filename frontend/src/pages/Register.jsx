@@ -40,7 +40,7 @@ const Register = () => {
                 </div>
 
                 <div className="glass-card p-10 border-white/5 shadow-2xl">
-                    <h2 className="text-2xl font-bold text-white mb-8 text-center uppercase tracking-widest text-xs opacity-50">Create Workspace Identity</h2>
+                    <h2 className="text-2xl font-bold text-white mb-8 text-center uppercase tracking-widest text-xs opacity-50">Create Account</h2>
 
                     {error && (
                         <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-4 rounded-2xl mb-8 text-sm font-bold flex items-center">
@@ -57,7 +57,7 @@ const Register = () => {
                                 <input
                                     type="text"
                                     className="w-full bg-slate-900/50 border border-white/5 text-white p-4 pl-12 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all placeholder:text-slate-600"
-                                    placeholder="John Doe"
+                                    placeholder=""
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
@@ -66,7 +66,7 @@ const Register = () => {
                         </div>
 
                         <div className="group">
-                            <label className="block text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">Email Terminal</label>
+                            <label className="block text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">Email Id</label>
                             <div className="relative">
                                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-indigo-400 transition-colors" size={20} />
                                 <input
@@ -81,7 +81,7 @@ const Register = () => {
                         </div>
 
                         <div className="group">
-                            <label className="block text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">Secure Key</label>
+                            <label className="block text-slate-400 text-xs font-black uppercase tracking-[0.2em] mb-3 ml-1">Password</label>
                             <div className="relative">
                                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 group-focus-within:text-pink-400 transition-colors" size={20} />
                                 <input
@@ -99,16 +99,16 @@ const Register = () => {
                             type="submit"
                             className="w-full btn-primary group flex items-center justify-center space-x-3"
                         >
-                            <span className="text-lg">Initialize Account</span>
+                            <span className="text-lg">Register</span>
                             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                     </form>
 
                     <div className="mt-10 text-center">
                         <p className="text-slate-500 font-medium">
-                            Already have an identity?{' '}
+                            Already have an account?{' '}
                             <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-bold transition-colors">
-                                Authenticate Now
+                                Login
                             </Link>
                         </p>
                     </div>

@@ -8,6 +8,11 @@ import TaskManager from './pages/TaskManager';
 import Reports from './pages/Reports';
 import ActivityTracker from './pages/ActivityTracker';
 import ProtectedRoute from './components/ProtectedRoute';
+import Layout from './components/Layout';
+import ActivityRealtime from './pages/ActivityRealtime';
+
+import Attendance from './pages/Attendance';
+import Payroll from './pages/Payroll';
 
 function App() {
   return (
@@ -18,10 +23,15 @@ function App() {
           <Route path="/register" element={<Register />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/tasks" element={<TaskManager />} />
-            <Route path="/activity" element={<ActivityTracker />} />
-            <Route path="/reports" element={<Reports />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/tasks" element={<TaskManager />} />
+              <Route path="/tracker" element={<ActivityTracker />} />
+              <Route path="/activity-realtime" element={<ActivityRealtime />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/attendance" element={<Attendance />} />
+              <Route path="/payroll" element={<Payroll />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -30,5 +40,6 @@ function App() {
     </Router>
   );
 }
+
 
 export default App;

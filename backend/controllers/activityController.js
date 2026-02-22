@@ -115,9 +115,52 @@ const getActiveActivity = async (req, res) => {
     }
 };
 
+// @desc    Log activity from tracker
+// @route   POST /api/activities/log
+// @access  Private
+const logActivity = async (req, res) => {
+    try {
+        const { appName, activityLevel, keyboardCount, mouseCount, screenshot, location } = req.body;
+
+        const activeActivity = await Activity.findOne({
+            user: req.user._id,
+            endTime: { $exists: false }
+        });
+
+        if (activeActivity) {
+            // Update the current active activity with latest metrics
+            activeActivity.appName = appName || activeActivity.appName;
+            activeActivity.activityLevel = activityLevel || activeActivity.activityLevel;
+            activeActivity.keyboardCount = (activeActivity.keyboardCount || 0) + (keyboardCount || 0);
+            activeActivity.mouseCount = (activeActivity.mouseCount || 0) + (mouseCount || 0);
+            if (screenshot) activeActivity.screenshot = screenshot; // In a real app, save base64 to file
+            if (location) activeActivity.location = location;
+
+            await activeActivity.save();
+
+            // Emit update for real-time dashboard
+            const io = req.app.get('socketio');
+            if (io) {
+                io.emit('activity_realtime', {
+                    userId: req.user._id,
+                    appName,
+                    activityLevel,
+                    screenshot: screenshot ? true : false
+                });
+            }
+        }
+
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     startActivity,
     stopActivity,
     getTodayActivities,
-    getActiveActivity
+    getActiveActivity,
+    logActivity
 };
+

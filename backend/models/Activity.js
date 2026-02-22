@@ -13,11 +13,37 @@ const activitySchema = mongoose.Schema({
     activityType: {
         type: String,
         required: true,
-        enum: ['coding', 'meeting', 'designing', 'debugging', 'testing', 'documentation', 'learning', 'other'],
+        enum: ['coding', 'meeting', 'designing', 'debugging', 'testing', 'documentation', 'learning', 'browsing', 'other'],
         default: 'coding',
+    },
+    appName: {
+        type: String,
+    },
+    url: {
+        type: String,
     },
     description: {
         type: String,
+    },
+    screenshot: {
+        type: String, // Path to screenshot
+    },
+    activityLevel: {
+        type: Number, // 0-100 percentage
+        default: 0,
+    },
+    keyboardCount: {
+        type: Number,
+        default: 0,
+    },
+    mouseCount: {
+        type: Number,
+        default: 0,
+    },
+    location: {
+        latitude: Number,
+        longitude: Number,
+        address: String,
     },
     startTime: {
         type: Date,
@@ -42,3 +68,4 @@ const activitySchema = mongoose.Schema({
 const Activity = mongoose.model('Activity', activitySchema);
 
 module.exports = Activity;
+

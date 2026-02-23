@@ -34,7 +34,9 @@ const Register = () => {
                 <div className="z-10 text-white">
                     <div className="flex items-center gap-2 mb-12">
                         <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-600 font-black text-xl shadow-lg">H</div>
-                        <span className="font-bold text-2xl tracking-tight">Hubstaff Clone</span>
+                        <span className="font-bold text-2xl tracking-tight">
+                            LogicDocs
+                        </span>
                     </div>
                     <h1 className="text-5xl font-bold leading-tight mb-6">
                         Start tracking with <span className="text-indigo-200">confidence.</span>

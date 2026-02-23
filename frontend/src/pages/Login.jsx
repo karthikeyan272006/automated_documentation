@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { Mail, Lock, ArrowRight, User, ShieldCheck, CheckCircle2, ChevronLeft } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
     const [selectedRole, setSelectedRole] = useState(null); // null, 'user', or 'admin'
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -26,7 +28,7 @@ const Login = () => {
         <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
             <div className="mb-12">
                 <h2 className="text-4xl font-black text-slate-900 mb-3 tracking-tight">Identity Access</h2>
-                <p className="text-slate-500 text-lg">Choose your portal to continue to Hubstaff Clone.</p>
+                <p className="text-slate-500 text-lg">Choose your portal to continue to LogicDocs.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-6">
@@ -69,8 +71,8 @@ const Login = () => {
 
             <div className="mt-12 pt-8 border-t border-slate-100 text-center">
                 <p className="text-slate-400 font-medium">
-                    New to the ecosystem?{' '}
-                    <Link to="/register" className="text-indigo-600 font-bold hover:underline">Create an organization</Link>
+                    Don't have an account?{' '}
+                    <Link to="/register" className="text-indigo-600 font-bold hover:underline">Sign up</Link>
                 </p>
             </div>
         </div>
@@ -121,22 +123,38 @@ const Login = () => {
 
                 <div>
                     <div className="flex justify-between items-center mb-3 ml-1">
-                        <label className="text-slate-700 text-sm font-bold">Secure Key</label>
-                        <a href="#" className="text-xs font-bold text-indigo-600 hover:underline">Forgot Key?</a>
+                        <label className="text-slate-700 text-sm font-bold">Password</label>
+                        <a href="#" className="text-xs font-bold text-indigo-600 hover:underline">
+                            Forgot Password?
+                        </a>
                     </div>
+
                     <div className="relative group">
-                        <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors" size={20} />
+
+                        <Lock
+                            className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors"
+                            size={20}
+                        />
+
                         <input
-                            type="password"
-                            className="w-full bg-slate-50 border-2 border-slate-100 text-slate-900 p-5 pl-14 rounded-3xl outline-none focus:bg-white focus:border-indigo-600 transition-all placeholder:text-slate-400 font-medium"
+                            type={showPassword ? "text" : "password"}
+                            className="w-full bg-slate-50 border-2 border-slate-100 text-slate-900 p-5 pl-14 pr-14 rounded-3xl outline-none focus:bg-white focus:border-indigo-600 transition-all placeholder:text-slate-400 font-medium"
                             placeholder="••••••••"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
+
+                        {/* Eye Icon */}
+                        <span
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-5 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-indigo-600 transition-colors"
+                        >
+                            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                        </span>
+
                     </div>
                 </div>
-
                 <button
                     type="submit"
                     className="w-full py-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[24px] font-bold flex items-center justify-center gap-3 shadow-xl shadow-indigo-600/30 transition-all hover:translate-y-[-2px] active:translate-y-1 active:shadow-indigo-600/10"
@@ -160,7 +178,7 @@ const Login = () => {
                 <div className="z-10 text-white">
                     <div className="flex items-center gap-3 mb-16">
                         <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-indigo-600 font-black text-2xl shadow-xl">H</div>
-                        <span className="font-bold text-3xl tracking-tight">Hubstaff Clone</span>
+                        <span className="font-bold text-3xl tracking-tight">LogicDocs</span>
                     </div>
 
                     <div className="max-w-md">

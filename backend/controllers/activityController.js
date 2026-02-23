@@ -26,7 +26,8 @@ const startActivity = async (req, res) => {
             task,
             activityType,
             description,
-            startTime: new Date()
+            startTime: new Date(),
+            status: 'Running'
         });
 
         // Emit socket event for real-time dashboard update
@@ -60,8 +61,18 @@ const stopActivity = async (req, res) => {
             return res.status(404).json({ message: 'No active activity found' });
         }
 
+        const currentStatus = activity.status;
         activity.endTime = new Date();
-        activity.duration = Math.floor((activity.endTime - activity.startTime) / 1000);
+        activity.status = 'Stopped';
+
+        let initialDuration = Math.floor((activity.endTime - activity.startTime) / 1000);
+        let finalPausedTime = activity.totalPausedTime;
+
+        if (currentStatus === 'Paused' && activity.pausedAt) {
+            finalPausedTime += Math.floor((activity.endTime - activity.pausedAt) / 1000);
+        }
+
+        activity.duration = initialDuration - finalPausedTime;
         await activity.save();
 
         // Emit socket event for real-time dashboard update
@@ -156,11 +167,85 @@ const logActivity = async (req, res) => {
     }
 };
 
+// @desc    Pause an activity
+// @route   PUT /api/activities/pause
+// @access  Private
+const pauseActivity = async (req, res) => {
+    try {
+        const activity = await Activity.findOne({
+            user: req.user._id,
+            endTime: { $exists: false },
+            status: 'Running'
+        });
+
+        if (!activity) {
+            return res.status(404).json({ message: 'No active running activity found' });
+        }
+
+        activity.status = 'Paused';
+        activity.pausedAt = new Date();
+        await activity.save();
+
+        const io = req.app.get('socketio');
+        if (io) {
+            io.emit('activity_update', {
+                userId: req.user._id,
+                status: 'Paused',
+                pausedAt: activity.pausedAt
+            });
+        }
+
+        res.json(activity);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Resume an activity
+// @route   PUT /api/activities/resume
+// @access  Private
+const resumeActivity = async (req, res) => {
+    try {
+        const activity = await Activity.findOne({
+            user: req.user._id,
+            endTime: { $exists: false },
+            status: 'Paused'
+        });
+
+        if (!activity) {
+            return res.status(404).json({ message: 'No paused activity found' });
+        }
+
+        const now = new Date();
+        const pauseDuration = Math.floor((now - activity.pausedAt) / 1000);
+
+        activity.totalPausedTime += pauseDuration;
+        activity.status = 'Running';
+        activity.pausedAt = undefined;
+        await activity.save();
+
+        const io = req.app.get('socketio');
+        if (io) {
+            io.emit('activity_update', {
+                userId: req.user._id,
+                status: 'Running',
+                totalPausedTime: activity.totalPausedTime
+            });
+        }
+
+        res.json(activity);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     startActivity,
     stopActivity,
     getTodayActivities,
     getActiveActivity,
-    logActivity
+    logActivity,
+    pauseActivity,
+    resumeActivity
 };
 

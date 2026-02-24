@@ -61,9 +61,12 @@ const ActivityTracker = () => {
 
     useEffect(() => {
         const handleUserActivity = () => {
-            setLastActivity(Date.now());
-            if (activeActivity && activeActivity.status === 'Paused') {
-                handleResume();
+            const now = Date.now();
+            if (now - lastActivity > 500) { // Throttle updates to 500ms
+                setLastActivity(now);
+                if (activeActivity && activeActivity.status === 'Paused') {
+                    handleResume();
+                }
             }
         };
 
@@ -88,16 +91,19 @@ const ActivityTracker = () => {
 
     const handleStart = async () => {
         try {
+            console.log('Frontend: Starting activity with data:', { selectedTask, activityType, description });
             const res = await api.post('/activities/start', {
                 task: selectedTask || undefined,
                 activityType,
                 description
             });
+            console.log('Frontend: Start activity response:', res.data);
             setActiveActivity(res.data);
+            console.log('Frontend: activeActivity set to:', res.data);
             const activitiesRes = await api.get('/activities/today');
             setActivities(activitiesRes.data);
         } catch (error) {
-            console.error('Error starting activity:', error);
+            console.error('Frontend: Error starting activity:', error);
         }
     };
 
@@ -131,9 +137,11 @@ const ActivityTracker = () => {
     };
 
     const formatTime = (seconds) => {
-        const hrs = Math.floor(seconds / (3600 || 0));
-        const mins = Math.floor(((seconds || 0) % 3600) / 60);
-        const secs = (seconds || 0) % 60;
+        if (seconds === undefined || seconds === null || isNaN(seconds)) return "00:00:00";
+        const totalSecs = Math.max(0, Math.floor(seconds));
+        const hrs = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
         return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 

@@ -6,7 +6,9 @@ const Task = require('../models/Task');
 // @access  Private
 const startActivity = async (req, res) => {
     try {
+        console.log('Backend: startActivity called by user:', req.user._id);
         const { task, activityType, description } = req.body;
+        console.log('Backend: Data received:', { task, activityType, description });
 
         // Check if there's already an active activity for this user
         const activeActivity = await Activity.findOne({
@@ -15,10 +17,11 @@ const startActivity = async (req, res) => {
         });
 
         if (activeActivity) {
-            // Stop the previous one first
+            console.log('Backend: Found existing active activity, stopping it:', activeActivity._id);
             activeActivity.endTime = new Date();
             activeActivity.duration = Math.floor((activeActivity.endTime - activeActivity.startTime) / 1000);
             await activeActivity.save();
+            console.log('Backend: Previous activity stopped.');
         }
 
         const activity = await Activity.create({
@@ -29,6 +32,8 @@ const startActivity = async (req, res) => {
             startTime: new Date(),
             status: 'Running'
         });
+
+        console.log('Backend: New activity created:', activity._id);
 
         // Emit socket event for real-time dashboard update
         const io = req.app.get('socketio');
@@ -43,6 +48,7 @@ const startActivity = async (req, res) => {
 
         res.status(201).json(activity);
     } catch (error) {
+        console.error('Backend: Error in startActivity:', error);
         res.status(500).json({ message: error.message });
     }
 };

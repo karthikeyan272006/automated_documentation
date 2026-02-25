@@ -81,7 +81,7 @@ const AdminDashboard = () => {
                             <tbody>
                                 {users.map(user => (
                                     <tr key={user._id} className="border-b last:border-0 hover:bg-gray-100 transition">
-                                        <td className="px-4 py-3 font-medium text-gray-800">{user.name}</td>
+                                        <td className="px-4 py-3 font-medium text-gray-800">{user.fullname}</td>
                                         <td className="px-4 py-3 text-gray-600">{user.email}</td>
                                         <td className="px-4 py-3">
                                             <span className={`px-2 py-1 rounded text-xs ${user.role === 'admin' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'}`}>
@@ -104,8 +104,8 @@ const AdminDashboard = () => {
                                 <li key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${index === 0 ? 'bg-yellow-100 text-yellow-600' :
-                                                index === 1 ? 'bg-gray-200 text-gray-600' :
-                                                    'bg-orange-100 text-orange-600'
+                                            index === 1 ? 'bg-gray-200 text-gray-600' :
+                                                'bg-orange-100 text-orange-600'
                                             }`}>
                                             {index + 1}
                                         </div>

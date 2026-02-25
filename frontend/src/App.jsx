@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import AdminDashboard from './pages/AdminDashboard';
 import TaskManager from './pages/TaskManager';
 import Reports from './pages/Reports';
 import ActivityTracker from './pages/ActivityTracker';
@@ -19,12 +20,13 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/tasks" element={<TaskManager />} />
               <Route path="/tracker" element={<ActivityTracker />} />
               <Route path="/activity-realtime" element={<ActivityRealtime />} />
@@ -34,7 +36,11 @@ function App() {
             </Route>
           </Route>
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route element={<ProtectedRoute adminOnly={true} />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </AuthProvider>
     </Router>

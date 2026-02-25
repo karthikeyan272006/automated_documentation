@@ -5,9 +5,11 @@ const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const path = require('path');
+const { default: mongoose } = require('mongoose');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
+// Connect to database
 connectDB();
 
 const app = express();
@@ -19,11 +21,13 @@ const io = new Server(server, {
     }
 });
 
+app.use(cors());
+app.use(express.json());
+
 // Make io accessible in controllers
 app.set('socketio', io);
 
-app.use(cors());
-app.use(express.json());
+
 
 app.get('/', (req, res) => {
     res.send('API is running...');

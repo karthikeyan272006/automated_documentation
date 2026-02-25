@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 import { Mail, Lock, User as UserIcon, ArrowRight, ShieldCheck, CheckCircle2, Globe } from 'lucide-react';
 
 const Register = () => {
-    const [name, setName] = useState('');
+    const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,8 +15,9 @@ const Register = () => {
         e.preventDefault();
         setError('');
         try {
-            await register(name, email, password);
-            navigate('/');
+            console.log('Submitting registration for:', fullname);
+            await register(fullname, email, password);
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Please try again.');
         }
@@ -34,7 +35,9 @@ const Register = () => {
                 <div className="z-10 text-white">
                     <div className="flex items-center gap-2 mb-12">
                         <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-600 font-black text-xl shadow-lg">H</div>
-                        <span className="font-bold text-2xl tracking-tight">Hubstaff Clone</span>
+                        <span className="font-bold text-2xl tracking-tight">
+                            LogicDocs
+                        </span>
                     </div>
                     <h1 className="text-5xl font-bold leading-tight mb-6">
                         Start tracking with <span className="text-indigo-200">confidence.</span>
@@ -99,8 +102,8 @@ const Register = () => {
                                     type="text"
                                     className="w-full bg-slate-50 border border-slate-200 text-slate-900 p-4 pl-12 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all placeholder:text-slate-400"
                                     placeholder="Enter your full name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={fullname}
+                                    onChange={(e) => setFullname(e.target.value)}
                                     required
                                 />
                             </div>

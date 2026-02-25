@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
     fullname: {
         type: String,
         required: true,
@@ -10,29 +10,32 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        lowercase: true, // Case-insensitive storage
+        lowercase: true,
     },
     password: {
         type: String,
         required: true,
     },
+    designation: {
+        type: String,
+        required: true,
+    },
     role: {
         type: String,
-        enum: ['employee', 'user'], // Standardizing to include 'employee'
-        default: 'employee',
+        default: 'admin',
     },
 }, {
     timestamps: true,
 });
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
-    console.log(`Comparing passwords for: ${this.email}`);
+adminSchema.methods.matchPassword = async function (enteredPassword) {
+    console.log(`Comparing admin passwords for: ${this.email}`);
     const isMatch = await bcrypt.compare(enteredPassword, this.password);
-    console.log(`Password match result: ${isMatch}`);
+    console.log(`Admin password match result: ${isMatch}`);
     return isMatch;
 };
 
-userSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
     }
@@ -41,4 +44,4 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Admin", adminSchema);

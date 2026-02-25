@@ -18,10 +18,7 @@
         "socket.io": "^4.8.3"
     },
     "devDependencies": {
-        "nodemon": "^3.1.0"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "type": "commonjs"
+        "nodemon": "^3.1.14"
+    }
+
 }

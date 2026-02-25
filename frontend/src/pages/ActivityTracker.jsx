@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import api from '../utils/api';
 import useAuth from '../hooks/useAuth';
-import { Play, Square, Clock, List, Activity as ActivityIcon, History, Zap, Timer, ChevronRight } from 'lucide-react';
+import { Play, Square, Pause, Clock, List, Activity as ActivityIcon, History, Zap, Timer, ChevronRight } from 'lucide-react';
 
 const ActivityTracker = () => {
     const { user } = useAuth();
@@ -13,6 +13,7 @@ const ActivityTracker = () => {
     const [description, setDescription] = useState('');
     const [timer, setTimer] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [lastActivity, setLastActivity] = useState(Date.now());
     const timerRef = useRef(null);
 
     useEffect(() => {
@@ -29,7 +30,11 @@ const ActivityTracker = () => {
                     setActiveActivity(activeRes.data);
                     const startTime = new Date(activeRes.data.startTime);
                     const now = new Date();
-                    setTimer(Math.floor((now - startTime) / 1000));
+                    let duration = Math.floor((now - startTime) / 1000) - (activeRes.data.totalPausedTime || 0);
+                    if (activeRes.data.status === 'Paused' && activeRes.data.pausedAt) {
+                        duration -= Math.floor((now - new Date(activeRes.data.pausedAt)) / 1000);
+                    }
+                    setTimer(duration);
                 }
                 setLoading(false);
             } catch (error) {
@@ -41,31 +46,64 @@ const ActivityTracker = () => {
     }, []);
 
     useEffect(() => {
-        if (activeActivity) {
+        if (activeActivity && activeActivity.status === 'Running') {
             timerRef.current = setInterval(() => {
                 setTimer(prev => prev + 1);
             }, 1000);
         } else {
             if (timerRef.current) clearInterval(timerRef.current);
-            setTimer(0);
+            if (!activeActivity) setTimer(0);
         }
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
     }, [activeActivity]);
 
+    useEffect(() => {
+        const handleUserActivity = () => {
+            const now = Date.now();
+            if (now - lastActivity > 500) { // Throttle updates to 500ms
+                setLastActivity(now);
+                if (activeActivity && activeActivity.status === 'Paused') {
+                    handleResume();
+                }
+            }
+        };
+
+        window.addEventListener('mousemove', handleUserActivity);
+        window.addEventListener('keydown', handleUserActivity);
+
+        const idleCheckInterval = setInterval(() => {
+            if (activeActivity && activeActivity.status === 'Running') {
+                const idleTime = (Date.now() - lastActivity) / 1000;
+                if (idleTime > 60) {
+                    handlePause();
+                }
+            }
+        }, 5000);
+
+        return () => {
+            window.removeEventListener('mousemove', handleUserActivity);
+            window.removeEventListener('keydown', handleUserActivity);
+            clearInterval(idleCheckInterval);
+        };
+    }, [activeActivity, lastActivity]);
+
     const handleStart = async () => {
         try {
+            console.log('Frontend: Starting activity with data:', { selectedTask, activityType, description });
             const res = await api.post('/activities/start', {
                 task: selectedTask || undefined,
                 activityType,
                 description
             });
+            console.log('Frontend: Start activity response:', res.data);
             setActiveActivity(res.data);
+            console.log('Frontend: activeActivity set to:', res.data);
             const activitiesRes = await api.get('/activities/today');
             setActivities(activitiesRes.data);
         } catch (error) {
-            console.error('Error starting activity:', error);
+            console.error('Frontend: Error starting activity:', error);
         }
     };
 
@@ -80,10 +118,30 @@ const ActivityTracker = () => {
         }
     };
 
+    const handlePause = async () => {
+        try {
+            const res = await api.put('/activities/pause');
+            setActiveActivity(res.data);
+        } catch (error) {
+            console.error('Error pausing activity:', error);
+        }
+    };
+
+    const handleResume = async () => {
+        try {
+            const res = await api.put('/activities/resume');
+            setActiveActivity(res.data);
+        } catch (error) {
+            console.error('Error resuming activity:', error);
+        }
+    };
+
     const formatTime = (seconds) => {
-        const hrs = Math.floor(seconds / (3600 || 0));
-        const mins = Math.floor(((seconds || 0) % 3600) / 60);
-        const secs = (seconds || 0) % 60;
+        if (seconds === undefined || seconds === null || isNaN(seconds)) return "00:00:00";
+        const totalSecs = Math.max(0, Math.floor(seconds));
+        const hrs = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
         return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     };
 
@@ -119,9 +177,9 @@ const ActivityTracker = () => {
                     <div className="timer-card">
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className={`w-3 h-3 rounded-full ${activeActivity ? 'bg-emerald-500 animate-pulse' : 'bg-slate-500'}`}></div>
+                                <div className={`w-3 h-3 rounded-full ${activeActivity?.status === 'Running' ? 'bg-emerald-500 animate-pulse' : activeActivity?.status === 'Paused' ? 'bg-amber-500' : 'bg-slate-500'}`}></div>
                                 <span className="text-sm font-bold uppercase tracking-widest text-slate-400">
-                                    {activeActivity ? 'Tracking In Progress' : 'System Idle'}
+                                    {activeActivity ? (activeActivity.status === 'Running' ? 'Active' : 'Idle / Paused') : 'System Idle'}
                                 </span>
                             </div>
                             <div className="text-6xl font-black font-mono mb-8 tracking-tighter">
@@ -149,12 +207,29 @@ const ActivityTracker = () => {
                         </div>
                         <div className="flex flex-col gap-4 ml-8">
                             {activeActivity ? (
-                                <button
-                                    onClick={handleStop}
-                                    className="w-20 h-20 bg-red-500 hover:bg-red-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-red-500/30 transition-all active:scale-95"
-                                >
-                                    <Square size={32} />
-                                </button>
+                                <>
+                                    {activeActivity.status === 'Running' ? (
+                                        <button
+                                            onClick={handlePause}
+                                            className="w-20 h-20 bg-amber-500 hover:bg-amber-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-amber-500/30 transition-all active:scale-95"
+                                        >
+                                            <Pause size={32} fill="white" />
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={handleResume}
+                                            className="w-20 h-20 bg-emerald-500 hover:bg-emerald-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-emerald-500/30 transition-all active:scale-95"
+                                        >
+                                            <Play size={32} fill="white" className="ml-1" />
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={handleStop}
+                                        className="w-20 h-20 bg-red-500 hover:bg-red-600 rounded-3xl flex items-center justify-center text-white shadow-xl shadow-red-500/30 transition-all active:scale-95"
+                                    >
+                                        <Square size={32} />
+                                    </button>
+                                </>
                             ) : (
                                 <button
                                     onClick={handleStart}

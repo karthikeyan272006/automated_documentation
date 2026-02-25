@@ -57,6 +57,18 @@ const activitySchema = mongoose.Schema({
         type: Number, // duration in seconds
         default: 0,
     },
+    status: {
+        type: String,
+        enum: ['Running', 'Paused', 'Stopped'],
+        default: 'Running',
+    },
+    pausedAt: {
+        type: Date,
+    },
+    totalPausedTime: {
+        type: Number, // in seconds
+        default: 0,
+    },
     isManual: {
         type: Boolean,
         default: false,

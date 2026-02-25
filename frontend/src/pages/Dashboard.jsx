@@ -12,6 +12,9 @@ const Dashboard = () => {
     const [analytics, setAnalytics] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    console.log('Dashboard render - User:', user);
+    console.log('Dashboard render - Loading:', loading);
+
     useEffect(() => {
         const fetchAnalytics = async () => {
             try {
@@ -44,7 +47,7 @@ const Dashboard = () => {
             <div className="flex justify-between items-center mb-10">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                        Good Morning, {user?.name || 'User'}
+                        Good Morning, {user?.fullname || user?.name || 'User'}
                     </h1>
                     <p className="text-slate-500">Your agency is looking productive today.</p>
                 </div>

@@ -4,7 +4,7 @@ import useAuth from '../hooks/useAuth';
 import { Mail, Lock, User as UserIcon, ArrowRight, ShieldCheck, CheckCircle2, Globe } from 'lucide-react';
 
 const Register = () => {
-    const [name, setName] = useState('');
+    const [fullname, setFullname] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,8 +15,9 @@ const Register = () => {
         e.preventDefault();
         setError('');
         try {
-            await register(name, email, password);
-            navigate('/');
+            console.log('Submitting registration for:', fullname);
+            await register(fullname, email, password);
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Please try again.');
         }
@@ -101,8 +102,8 @@ const Register = () => {
                                     type="text"
                                     className="w-full bg-slate-50 border border-slate-200 text-slate-900 p-4 pl-12 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all placeholder:text-slate-400"
                                     placeholder="Enter your full name"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    value={fullname}
+                                    onChange={(e) => setFullname(e.target.value)}
                                     required
                                 />
                             </div>

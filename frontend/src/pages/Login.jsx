@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import useAuth from '../hooks/useAuth';
 import { Mail, Lock, ArrowRight, User, ShieldCheck, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { Eye, EyeOff } from "lucide-react";
@@ -10,15 +10,27 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, user } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user) {
+            console.log('User detected, redirecting based on role:', user.role);
+            if (user.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/dashboard');
+            }
+        }
+    }, [user, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         try {
-            await login(email, password);
-            navigate('/');
+            console.log(`Sending login request for role: ${selectedRole}`);
+            await login(email, password, selectedRole);
+            // Redirect handled by useEffect
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
         }

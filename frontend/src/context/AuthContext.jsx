@@ -21,6 +21,17 @@ export const AuthProvider = ({ children }) => {
         const { data } = await api.post(endpoint, { email, password });
         localStorage.setItem('userInfo', JSON.stringify(data));
         setUser(data);
+
+        // Mark attendance on login (skip for admin if needed, but requirements say "Users are stored in MongoDB")
+        if (data && data.role !== 'admin') {
+            try {
+                await api.post('/attendance/login');
+                console.log('Attendance logged successfully');
+            } catch (err) {
+                console.error('Error logging attendance:', err);
+            }
+        }
+
         return data;
     };
 
@@ -29,10 +40,26 @@ export const AuthProvider = ({ children }) => {
         const { data } = await api.post('/users/register', { fullname, email, password });
         localStorage.setItem('userInfo', JSON.stringify(data));
         setUser(data);
+
+        // Mark attendance on first login/registration
+        try {
+            await api.post('/attendance/login');
+        } catch (err) {
+            console.error('Error logging initial attendance:', err);
+        }
+
         return data;
     };
 
-    const logout = () => {
+    const logout = async () => {
+        if (user && user.role !== 'admin') {
+            try {
+                await api.post('/attendance/logout');
+                console.log('Attendance logout logged successfully');
+            } catch (err) {
+                console.error('Error logging attendance logout:', err);
+            }
+        }
         localStorage.removeItem('userInfo');
         setUser(null);
     };

@@ -36,6 +36,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', require('./routes/authRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/activities', require('./routes/activityRoutes'));
+app.use('/api/app-activity', require('./routes/appActivityRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/reports', require('./routes/reportRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));

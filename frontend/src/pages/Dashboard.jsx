@@ -8,11 +8,26 @@ import useAuth from '../hooks/useAuth';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
 const Dashboard = () => {
-    const { user } = useAuth();
+    const { user, setUser } = useAuth();
     const [analytics, setAnalytics] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = localStorage.getItem('token');
+
+                const { data } = await api.get('/auth/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                setUser(data);
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
+        };
+
         const fetchAnalytics = async () => {
             try {
                 const { data } = await api.get('/analytics');
@@ -24,8 +39,9 @@ const Dashboard = () => {
             }
         };
 
+        fetchUserData();
         fetchAnalytics();
-    }, []);
+    }, [setUser]);
 
     if (loading) return (
         <div className="flex items-center justify-center h-[80vh]">
@@ -44,7 +60,7 @@ const Dashboard = () => {
             <div className="flex justify-between items-center mb-10">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900 mb-1">
-                        Good Morning, {user?.name || 'User'}
+                        Welcome, {user?.name}
                     </h1>
                     <p className="text-slate-500">Your agency is looking productive today.</p>
                 </div>

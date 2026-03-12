@@ -6,9 +6,10 @@ const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const path = require('path');
 
-dotenv.config({ path: path.join(__dirname, '.env') });
+require("dotenv").config();
 
 connectDB();
+require('./config/passport'); // Import passport config
 
 const app = express();
 const server = http.createServer(app);
@@ -24,18 +25,29 @@ app.set('socketio', io);
 
 app.use(cors());
 app.use(express.json());
+const passport = require('passport');
+app.use(passport.initialize());
 
-app.get('/', (req, res) => {
-    res.send('API is running...');
-});
+// Serve frontend
+const __frontendDir = path.join(__dirname, '../frontend/dist');
+app.use(express.static(__frontendDir));
 
 app.use('/api/users', require('./routes/authRoutes'));
+app.use('/api/auth', require('./routes/authRoutes')); // Added for Google OAuth consistency
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/activities', require('./routes/activityRoutes'));
 app.use('/api/app-activity', require('./routes/appActivityRoutes'));
 app.use('/api/analytics', require('./routes/analyticsRoutes'));
 app.use('/api/reports', require('./routes/reportRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/attendance', require('./routes/attendanceRoutes'));
+app.use('/api/sync', require('./routes/syncRoutes'));
+
+
+app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__frontendDir, 'index.html'));
+});
+
 
 // Socket.io connection logic
 io.on('connection', (socket) => {

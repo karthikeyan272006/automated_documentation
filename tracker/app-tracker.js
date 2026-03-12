@@ -8,6 +8,17 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const API_URL = process.env.API_URL || 'http://localhost:5000/api/app-activity';
 const JWT_TOKEN = process.env.JWT_TOKEN;
 const POLL_INTERVAL = 5000; // 5 seconds
+const envPath = path.join(__dirname, '.env');
+
+function getLatestToken() {
+    try {
+        const envContent = require('fs').readFileSync(envPath, 'utf8');
+        const match = envContent.match(/JWT_TOKEN=["']?([^"'\n\r]+)["']?/);
+        return match ? match[1] : null;
+    } catch (e) {
+        return null;
+    }
+}
 
 let currentSession = null;
 
@@ -29,8 +40,9 @@ async function getActiveAppDetails() {
 }
 
 async function sendSessionToBackend(session) {
-    if (!JWT_TOKEN || JWT_TOKEN === 'REPLACE_WITH_YOUR_TOKEN_FROM_BROWSER') {
-        console.error('JWT_TOKEN is missing or not set in .env. Cannot sync activity.');
+    const token = getLatestToken();
+    if (!token || token === 'REPLACE_WITH_YOUR_TOKEN_FROM_BROWSER') {
+        console.error('JWT_TOKEN is missing or not synced from browser yet. Cannot sync activity.');
         return;
     }
 
@@ -43,7 +55,7 @@ async function sendSessionToBackend(session) {
 
         const response = await axios.post(API_URL, payload, {
             headers: {
-                'Authorization': `Bearer ${JWT_TOKEN}`
+                'Authorization': `Bearer ${token}`
             }
         });
 

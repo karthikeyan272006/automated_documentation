@@ -3,7 +3,7 @@ import api from '../utils/api';
 import useAuth from '../hooks/useAuth';
 import { Play, Square, Pause, Clock, List, Activity as ActivityIcon, History, Zap, Timer, ChevronRight } from 'lucide-react';
 
-const ActivityTracker = () => {
+const TimeTracking = () => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState([]);
     const [activities, setActivities] = useState([]);
@@ -91,30 +91,47 @@ const ActivityTracker = () => {
 
     const handleStart = async () => {
         try {
-            console.log('Frontend: Starting activity with data:', { selectedTask, activityType, description });
+            console.log('Frontend: Starting activity and attendance...');
+
+            // Try attendance start, ignore if already marked for today
+            try {
+                await api.post('/attendance/start');
+            } catch (attErr) {
+                if (attErr.response && attErr.response.status === 400 && attErr.response.data.message?.includes('Attendance already marked')) {
+                    console.warn('Attendance already started for today, proceeding.');
+                } else {
+                    console.error('Attendance start error:', attErr);
+                }
+            }
+
             const res = await api.post('/activities/start', {
                 task: selectedTask || undefined,
                 activityType,
                 description
             });
-            console.log('Frontend: Start activity response:', res.data);
             setActiveActivity(res.data);
-            console.log('Frontend: activeActivity set to:', res.data);
             const activitiesRes = await api.get('/activities/today');
             setActivities(activitiesRes.data);
         } catch (error) {
-            console.error('Frontend: Error starting activity:', error);
+            console.error('Error starting tracking:', error);
+            alert(error.response?.data?.message || 'Error starting session');
         }
     };
 
     const handleStop = async () => {
         try {
+            console.log('Frontend: Stopping activity and attendance...');
+
+            // Attendance stop moved to global Sign Out
+            // await api.post('/attendance/stop');
+
             await api.put('/activities/stop');
             setActiveActivity(null);
             const activitiesRes = await api.get('/activities/today');
             setActivities(activitiesRes.data);
         } catch (error) {
-            console.error('Error stopping activity:', error);
+            console.error('Error stopping tracking:', error);
+            alert(error.response?.data?.message || 'Error stopping session');
         }
     };
 
@@ -295,7 +312,7 @@ const ActivityTracker = () => {
                         <div className="space-y-4">
                             <div className="flex justify-between text-sm">
                                 <span className="text-slate-500">Focus Duration</span>
-                                <span className="font-bold text-slate-900">4h 22m</span>
+                                <span className="font-bold text-slate-900">1h 16m</span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-slate-500">Idle Time</span>
@@ -323,5 +340,5 @@ const ActivityTracker = () => {
     );
 };
 
-export default ActivityTracker;
+export default TimeTracking;
 
